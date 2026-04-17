@@ -1,3 +1,16 @@
+-- =============================================================================
+-- BUILD THE DEMO SCHEMA AND SEED DATA (CLASS 02)
+-- =============================================================================
+-- This script **drops** existing tables (if present) and recreates them fresh.
+-- Run order matters: DROP child/first, or use IF EXISTS as here.
+--
+-- You will see:
+-- * **Primary keys** (SERIAL or composite PRIMARY KEY).
+-- * Typical commerce/cinema tables: products, screenings, logs, promos, warehouse bins, tags.
+-- * **INSERT** examples: literals, TIMESTAMPTZ, DATE, NULL in JSON column.
+-- =============================================================================
+
+-- Clean slate — removes old versions of these tables when re-running the lesson.
 DROP TABLE IF EXISTS tag_catalog;
 DROP TABLE IF EXISTS event_log;
 DROP TABLE IF EXISTS promo_code;
@@ -5,6 +18,10 @@ DROP TABLE IF EXISTS screening_session;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS warehouse_bin;
 
+-- -----------------------------------------------------------------------------
+-- PRODUCT — sellable items (DVDs, merch, snacks)
+-- -----------------------------------------------------------------------------
+-- SERIAL: surrogate primary key (product_id). sku is the business identifier.
 CREATE TABLE product (
 	product_id SERIAL PRIMARY KEY,
 	sku VARCHAR(32) NOT NULL,
@@ -15,6 +32,10 @@ CREATE TABLE product (
 	created_at TIMESTAMPTZ
 );
 
+-- -----------------------------------------------------------------------------
+-- WAREHOUSE_BIN — storage location (composite primary key)
+-- -----------------------------------------------------------------------------
+-- Two-part key (warehouse_code, bin_code): together they uniquely identify a bin.
 CREATE TABLE warehouse_bin (
     warehouse_code CHAR(2) NOT NULL,
     bin_code VARCHAR(12) NOT NULL,
@@ -23,6 +44,9 @@ CREATE TABLE warehouse_bin (
     PRIMARY KEY (warehouse_code, bin_code)
 );
 
+-- -----------------------------------------------------------------------------
+-- TAG_CATALOG — labels for merchandising (ordered list)
+-- -----------------------------------------------------------------------------
 CREATE TABLE tag_catalog (
     tag_id SERIAL PRIMARY KEY,
     label VARCHAR(40) NOT NULL,
@@ -30,6 +54,9 @@ CREATE TABLE tag_catalog (
 );
 
 
+-- -----------------------------------------------------------------------------
+-- SCREENING_SESSION — one row per movie showing in a hall
+-- -----------------------------------------------------------------------------
 CREATE TABLE screening_session (
 	screening_id SERIAL PRIMARY KEY,
 	movie_title VARCHAR(120) NOT NULL,
@@ -40,6 +67,9 @@ CREATE TABLE screening_session (
     screening_status VARCHAR(20) NOT NULL
 );
 
+-- -----------------------------------------------------------------------------
+-- EVENT_LOG — application/system log lines (audit, debugging)
+-- -----------------------------------------------------------------------------
 CREATE TABLE event_log (
     event_id SERIAL PRIMARY KEY,
     source VARCHAR(40) NOT NULL,
@@ -49,6 +79,9 @@ CREATE TABLE event_log (
     payload_json TEXT
 );
 
+-- -----------------------------------------------------------------------------
+-- PROMO_CODE — discount windows
+-- -----------------------------------------------------------------------------
 CREATE TABLE promo_code (
     promo_id SERIAL PRIMARY KEY,
     code VARCHAR(24) NOT NULL,
@@ -58,6 +91,10 @@ CREATE TABLE promo_code (
     is_stackable BOOLEAN NOT NULL
 );
 
+-- -----------------------------------------------------------------------------
+-- SEED DATA — INSERT … VALUES
+-- -----------------------------------------------------------------------------
+-- Multiple tuples after VALUES: one INSERT loads several rows efficiently.
 INSERT INTO product (sku, name, list_price, stock_qty, is_active, created_at)
 VALUES
     ('DVD-001', 'Classic Drama Collection', 19.99, 40, TRUE, TIMESTAMPTZ '2026-01-10 09:00:00+00'),
@@ -104,9 +141,11 @@ VALUES
     ('new-release', 20),
     ('sale', 30);
 
-SELECT * FROM product
-SELECT * FROM screening_session
-SELECT * FROM event_log
-SELECT * FROM promo_code
-SELECT * FROM warehouse_bin
-SELECT * FROM tag_catalog
+-- Quick verification: full table scans for small demo data (OK for learning; in
+-- production you would add indexes and limit columns).
+SELECT * FROM product;
+SELECT * FROM screening_session;
+SELECT * FROM event_log;
+SELECT * FROM promo_code;
+SELECT * FROM warehouse_bin;
+SELECT * FROM tag_catalog;

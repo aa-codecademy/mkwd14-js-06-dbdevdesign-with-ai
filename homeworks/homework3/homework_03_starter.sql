@@ -1,5 +1,4 @@
--- Homework 03 starter — e-commerce sample data (NO foreign keys).
--- Tables are related only by naming and integer columns you must discover.
+-- Homework 03 starter — e-commerce sample data (no FOREIGN KEY constraints).
 -- Run as-is before Part 1 and Part 2.
 
 CREATE TABLE customer (

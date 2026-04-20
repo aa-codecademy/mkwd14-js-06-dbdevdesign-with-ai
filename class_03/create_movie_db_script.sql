@@ -56,4 +56,17 @@ CREATE TABLE movie_genre (
 	PRIMARY KEY (movie_id, genre_id)
 );
 
+CREATE TABLE actor (
+	actor_id SERIAL PRIMARY KEY,
+	full_name VARCHAR(100) NOT NULL,
+	birth_year INTEGER CHECK (birth_year >= 1850 AND birth_year <= 2100),
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
+CREATE TABLE movie_actor (
+	movie_id INTEGER NOT NULL REFERENCES movie(movie_id) ON DELETE CASCADE,
+	actor_id INTEGER NOT NULL REFERENCES actor(actor_id) ON DELETE CASCADE,
+	role_name VARCHAR(100),
+	is_lead_role BOOLEAN NOT NULL DEFAULT false,
+	PRIMARY KEY (movie_id, actor_id)
+);

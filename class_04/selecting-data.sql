@@ -160,20 +160,83 @@ SELECT ROUND(AVG(seat_count)::numeric, 2)
 FROM ticket_booking
 WHERE booking_status = 'confirmed'
 
--- Movies whose synopsis mentions "family".
+-- Movies whose synopsis mentions "location".
 
+SELECT m.title, md.synopsis
+FROM movie m
+JOIN movie_detail md ON m.movie_id = md.movie_id
+WHERE md.synopsis ILIKE '%location%'
 
+-- Share of each age rating in the catalog (percentage of total movies).
+
+SELECT age_rating, COUNT(*) as movies, ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) as percentage_of_all_movies
+FROM movie
+GROUP BY age_rating
+
+-- Directors who have never had a sold-out screening
+
+SELECT d.full_name
+FROM director d
+WHERE NOT EXISTS (
+			SELECT 1
+			FROM movie m
+			JOIN screening s ON m.movie_id = s.movie_id
+			WHERE m.director_id = d.director_id
+				AND (s.screening_status = 'sold_out' OR s.available_seats = 0)
+		)
 
 -- Movies that have NO screenings scheduled.
 
+SELECT *
+FROM movie m
+LEFT JOIN screening s ON s.movie_id = m.movie_id
+WHERE s.screening_id IS NULL
+ORDER BY m.title
+
 -- Movies that have a movie_detail row but no tagline.
+
+SELECT *
+FROM movie m
+JOIN movie_detail md ON m.movie_id = md.movie_id
+WHERE md.tagline IS NULL
 
 -- Screenings with zero bookings.
 
+SELECT m.title, s.hall_name, s.starts_at, COUNT(tb.screening_id) AS tickets_booked
+FROM screening s
+JOIN movie m ON m.movie_id = s.movie_id
+LEFT JOIN ticket_booking tb ON tb.screening_id = s.screening_id
+WHERE tb.booking_status = 'canceled' OR tb.booking_status IS NULL
+GROUP BY m.title, s.hall_name, s.starts_at
+HAVING COUNT(tb.screening_id) = 0
+
 -- Shortest and longest movie in the catalog.
+
+(SELECT title, duration_minutes, 'shortest' AS label
+FROM movie
+ORDER BY duration_minutes ASC
+LIMIT 1)
+UNION ALL
+(SELECT title, duration_minutes, 'longest' AS label
+FROM movie
+ORDER BY duration_minutes DESC
+LIMIT 1)
 
 -- Actor-director pairs that have collaborated on more than one movie.
 
+SELECT a.full_name, d.full_name, COUNT(m.movie_id) as movies_together
+FROM actor a
+JOIN movie_actor ma ON a.actor_id = ma.actor_id
+JOIN movie m ON m.movie_id = ma.movie_id
+JOIN director d ON m.director_id = d.director_id
+GROUP BY a.actor_id, d.full_name
+HAVING COUNT(DISTINCT m.movie_id) > 1
+ORDER BY movies_together DESC, a.full_name
+
 -- Approximate age of each actor at the time their movie was released
 
--- Directors who have never had a sold-out screening
+SELECT a.full_name, m.title, (m.release_year - a.birth_year) AS age_at_release
+FROM actor a
+JOIN movie_actor ma ON a.actor_id = ma.actor_id
+JOIN movie m ON m.movie_id = ma.movie_id
+WHERE a.birth_year IS NOT NULL AND m.release_year IS NOT NULL

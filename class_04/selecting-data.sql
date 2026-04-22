@@ -59,3 +59,41 @@ ORDER BY a.full_name
 -- Actor name and role name for every movie they played in.
 
 -- Actors that have only ever played lead roles (never a supporting role).
+
+-- Actors whose role name starts with the letter "K".
+
+-- Actors who played in movies from more than one director.
+
+--  Youngest and oldest actors we have on record.
+
+-- For every actor, show the number of genres they have been cast in.
+
+-- Directors with the most screenings scheduled for their movies.
+
+-- First and latest movie (by release year) for each director.
+
+-- Actors that have sold the most tickets (by total seats booked) for their movies.
+
+-- Total seats sold per movie (top 10).
+
+-- Percentage of seats sold for each screening.
+
+-- Average number of seats per booking.
+
+-- Movies whose synopsis mentions "family".
+
+-- Movies that have NO screenings scheduled.
+
+-- Movies that have a movie_detail row but no tagline.
+
+-- Screenings with zero bookings.
+
+-- Shortest and longest movie in the catalog.
+
+-- Actor-director pairs that have collaborated on more than one movie.
+
+-- Approximate age of each actor at the time their movie was released
+
+-- Directors who have never had a sold-out screening
+
+

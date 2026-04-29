@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>MovieBox</title>
+		<link rel="stylesheet" href="/styles.css" />
+	</head>
+	<body>
+		<header class="site-header">
+			<div class="header-inner">
+				<a href="#/" class="logo">MovieBox</a>
+				<p class="tagline-sub">Module 4 · Node + PostgreSQL demo</p>
+			</div>
+		</header>
+
+		<main class="layout">
+			<section id="list-view" class="panel list-panel">
+				<div class="toolbar" role="search" aria-label="Movie filters">
+					<label class="search-wrap">
+						<span class="visually-hidden">Search titles</span>
+						<input
+							type="search"
+							id="search-input"
+							placeholder="Search movie titles…"
+							autocomplete="off" />
+					</label>
+					<div id="genre-filters" class="genre-select-wrap toolbar-genre"></div>
+					<label class="filter-checkbox">
+						<input type="checkbox" id="now-showing-only" />
+						<span>Only movies with tickets on sale</span>
+					</label>
+				</div>
+				<div class="movie-area">
+					<p id="list-status" class="status-line" aria-live="polite"></p>
+					<div id="movie-grid" class="movie-grid"></div>
+				</div>
+			</section>
+
+			<section
+				id="detail-view"
+				class="panel detail-panel hidden"
+				aria-hidden="true">
+				<button type="button" id="back-btn" class="btn btn-ghost">
+					← Back to movies
+				</button>
+				<p id="detail-status" class="status-line" aria-live="polite"></p>
+				<div id="detail-content"></div>
+			</section>
+		</main>
+
+		<div
+			id="toast-container"
+			class="toast-container"
+			aria-live="polite"
+			aria-atomic="true"></div>
+
+		<script src="/app.js"></script>
+	</body>
+</html>

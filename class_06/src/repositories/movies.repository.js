@@ -7,19 +7,21 @@ export async function findAll({
 	limit = 25,
 	offset = 0,
 } = {}) {
-	const params = []; // used to store query parameters for parameterized queries
-	const where = []; // used to build dynamic WHERE clauses based on provided filters
+	// We build SQL dynamically, but values always go through placeholders ($1, $2...).
+	// This keeps the query safe from SQL injection.
+	const params = [];
+	const where = [];
 
-	// if we are searching by title, we add a parameter for the search term and a corresponding WHERE clause
+	// Optional title search.
 	if (search) {
 		params.push(`%${search}%`);
 		where.push(`m.title ILIKE $${params.length}`);
 	}
 
-	// if we are filtering by genre, we add a parameter for the genre name and a corresponding WHERE clause that checks for the existence of a matching genre for each movie
+	// Optional filter by genre name.
 	if (genre) {
 		params.push(genre);
-		// Using EXISTS we can check if there is at least one genre associated with the movie that matches the provided genre name without needing to join the genre table directly in the main query, which can improve performance when filtering by genre
+		// EXISTS checks whether a related row exists, without duplicating movie rows.
 		where.push(`
 				EXISTS (
 					SELECT 1 FROM movie_genre mg2
@@ -30,6 +32,7 @@ export async function findAll({
 			`);
 	}
 
+	// Optional "only currently bookable screenings" filter.
 	if (nowShowing) {
 		where.push(`
 				EXISTS (
@@ -42,9 +45,10 @@ export async function findAll({
 			`);
 	}
 
-	// if we have any WHERE conditions, we join them with AND and prepend the WHERE keyword; otherwise, we leave it empty
+	// If no filters are provided, whereClause is an empty string.
 	const whereClause = where.length > 0 ? `WHERE ${where.join(' AND ')}` : '';
 
+	// Add pagination placeholders at the end.
 	params.push(limit, offset);
 	const limitIdx = params.length - 1;
 	const offsetIdx = params.length;
@@ -81,9 +85,8 @@ export async function findAll({
 		params,
 	);
 
-	// json_agg - aggregates multiple rows into a JSON array
-	// json_build_object - builds a JSON object from key-value pairs
-	// '[]'::json - if there are no genres for a movie, we return an empty JSON array instead of null
+	// json_agg + json_build_object shape 1:N related data directly in SQL.
+	// COALESCE(..., '[]'::json) keeps API output consistent (empty array instead of null).
 
 	return result.rows;
 }
@@ -98,6 +101,7 @@ export async function findAll({
 // }
 
 export async function findById(id) {
+	// One movie with nested cast and genres arrays.
 	const result = await pool.query(
 		`
 			SELECT

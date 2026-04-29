@@ -4,6 +4,7 @@ import moviesRoutes from './movies.routes.js';
 
 const router = Router();
 
+// Simple health-check route to verify API + database connectivity.
 router.get('/health', async (req, res) => {
 	try {
 		const result = await pool.query('SELECT NOW() AS now');
@@ -14,6 +15,7 @@ router.get('/health', async (req, res) => {
 	}
 });
 
+// Group movie-related endpoints under /api/movies.
 router.use('/movies', moviesRoutes);
 
 export default router;

@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { Pool } from 'pg';
 
+// A Pool keeps reusable DB connections so every request does not open a new one.
 export const pool = new Pool({
 	host: process.env.DB_HOST || 'localhost',
 	port: Number(process.env.DB_PORT || 5432),

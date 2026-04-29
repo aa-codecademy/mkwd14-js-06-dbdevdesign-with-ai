@@ -5,5 +5,6 @@ const router = new Router();
 
 // GET /localhost:3000/api/movies
 router.get('/', moviesController.list);
+router.get('/:id', moviesController.getById);
 
 export default router;

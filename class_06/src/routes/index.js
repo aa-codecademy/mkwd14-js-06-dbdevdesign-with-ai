@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { pool } from '../config/db.js';
+import moviesRoutes from './movies.routes.js';
 
 const router = Router();
 
@@ -12,5 +13,7 @@ router.get('/health', async (req, res) => {
 		res.status(500).json({ status: 'Error', message: error.message });
 	}
 });
+
+router.use('/movies', moviesRoutes);
 
 export default router;

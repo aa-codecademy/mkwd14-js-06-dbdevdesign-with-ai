@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import router from './src/routes/index.js';
+import { errorHandler } from './src/middleware/error-handler.js';
 
 // In ESM we do not have __dirname, so we recreate it from import.meta.url.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -22,6 +23,8 @@ app.use('/api', router);
 
 // Serve frontend files from /public.
 app.use(express.static(publicDirPath));
+
+app.use(errorHandler);
 
 app.listen(PORT, HOSTNAME, () => {
 	console.log(`Server is running on http://${HOSTNAME}:${PORT}`);

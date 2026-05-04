@@ -6,6 +6,6 @@ export async function bookTicket(req, res, next) {
 
 		res.status(201).json(booking);
 	} catch (error) {
-		console.error(error);
+		next(error);
 	}
 }

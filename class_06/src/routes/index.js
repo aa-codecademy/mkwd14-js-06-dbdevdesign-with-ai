@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { pool } from '../config/db.js';
 import moviesRoutes from './movies.routes.js';
+import bookingsRoutes from './bookings.routes.js';
 
 const router = Router();
 
@@ -17,5 +18,8 @@ router.get('/health', async (req, res) => {
 
 // Group movie-related endpoints under /api/movies.
 router.use('/movies', moviesRoutes);
+
+// Group booking-related endpoints under /api/bookings.
+router.use('/bookings', bookingsRoutes);
 
 export default router;

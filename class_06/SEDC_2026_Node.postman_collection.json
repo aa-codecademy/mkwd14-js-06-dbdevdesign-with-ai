@@ -776,7 +776,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "9"
+                  "value": "fsdfsda"
                 }
               ]
             }
@@ -804,7 +804,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "521442"
+                  "value": "4"
                 }
               ]
             }
@@ -818,7 +818,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"screeningId\": 65478,\n    \"customerName\": \"Ivo\",\n    \"customerEmail\": \"ivo@kostovski.dev\",\n    \"seatCount\": 1\n}",
+              "raw": "{\n    \"screeningId\": 80,\n    \"customerName\": \"Ivo\",\n    \"customerEmail\": \"gdfsgdfsgev\",\n    \"seatCount\": 10\n}",
               "options": {
                 "raw": {
                   "language": "json"
